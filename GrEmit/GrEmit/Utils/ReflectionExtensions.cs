@@ -23,12 +23,12 @@ namespace GrEmit.Utils
             var pointerTypeType = FindType(types, IsMono ? "PointerType" : "SymbolType");
             var arrayTypeType = FindType(types, IsMono ? "ArrayType" : "SymbolType");
 
-            typeBuilderInstType = FindType(types, IsMono ? "MonoGenericClass" : "TypeBuilderInstantiation");
+            typeBuilderInstType = FindType(types, "TypeBuilderInstantiation");
 
             var runtimeMethodInfoType = FindType(types, IsMono ? "MonoMethod" : "RuntimeMethodInfo");
-            var runtimeGenericMethodInfoType = FindType(types, IsMono ? "MonoGenericMethod" : "RuntimeMethodInfo");
+            var runtimeGenericMethodInfoType = FindType(types,"RuntimeMethodInfo");
             var runtimeConstructorInfoType = FindType(types, IsMono ? "MonoCMethod" : "RuntimeConstructorInfo");
-            var runtimeGenericConstructorInfoType = FindType(types, IsMono ? "MonoGenericCMethod" : "RuntimeConstructorInfo");
+            var runtimeGenericConstructorInfoType = FindType(types, "RuntimeConstructorInfo");
             methodOnTypeBuilderInstType = FindType(types, IsMono ? "MethodOnTypeBuilderInst" : "MethodOnTypeBuilderInstantiation");
             constructorOnTypeBuilderInstType = FindType(types, IsMono ? "ConstructorOnTypeBuilderInst" : "ConstructorOnTypeBuilderInstantiation");
             if(!IsMono)
@@ -88,6 +88,19 @@ namespace GrEmit.Utils
                   = hashCodeCalculators[typeof(TypeBuilder)]
                     = hashCodeCalculators[typeof(GenericTypeParameterBuilder)]
                       = (Func<Type, int>)(type => type.GetHashCode());
+            hashCodeCalculators[byRefTypeType]
+              = hashCodeCalculators[pointerTypeType]
+                = hashCodeCalculators[arrayTypeType]
+                  = (Func<Type, int>)(type =>
+                      {
+                          if (type.IsByRef)
+                              return CalcHashCode(type.GetElementType()) * 31 + 1;
+                          if (type.IsPointer)
+                              return CalcHashCode(type.GetElementType()) * 31 + 2;
+                          if (type.IsArray)
+                              return (CalcHashCode(type.GetElementType()) * 31 + type.GetArrayRank()) * 31 + 3;
+                          return type.GetHashCode();
+                      });
             assignabilityCheckers[runtimeTypeType]
                 = assignabilityCheckers[monoTypeType]
                   = (Func<Type, Type, bool>)((to, from) =>

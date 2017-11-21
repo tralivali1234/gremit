@@ -1,13 +1,13 @@
-#GrEmit
+# GrEmit
 [![Build Status][build-status-travis]][travis]
 
 GrEmit is a library containing different helpers for generating code using Reflection.Emit with the main one being GroboIL - a smart wrapper over [ILGenerator](http://msdn.microsoft.com/en-us/library/system.reflection.emit.ilgenerator.aspx).
 
-##Usage
+## Usage
 
-GroboIL is a replacement for ILGenerator. Instead of calling ILGenerator.Emit(OpCode, ..), one calls GroboIL.OpCode(..).
+GroboIL is a replacement for ILGenerator. Instead of calling ILGenerator.Emit(OpCode, ..), one may call GroboIL.OpCode(..).
 
-###Example
+### Example
 
 ILGenerator:
 ```
@@ -30,10 +30,10 @@ using(var il = new GroboIL(method))
 }
 ```
 
-##Advantages
-Besides more beautiful interface GroboIL has some more assets over ILGenerator:
- - GroboIL has one method for all instructions from the same family, for instance, instead of 11 instructions OpCodes.Ldelem_* there is one method GroboIL.Ldelem(Type type).
- - During code generation GroboIL builds the content of the evaluation stack and validates instructions arguments, and if something went wrong, immediately throws an Exception.
+## Advantages
+Besides more beautiful interface GroboIL has some more advantages over ILGenerator:
+ - GroboIL has a single method for all instructions from the same family, for instance, instead of 11 instructions OpCodes.Ldelem_* there is one method GroboIL.Ldelem(Type type).
+ - During code generation GroboIL builds the content of the evaluation stack and validates instructions arguments, and if something is not OK, immediately throws an Exception.
  - There is a debug ouput of the code being generated.
  - Full generics support.
  - It is possible to debug MethodBuilders (use constructor of GroboIL with parameter [ISymbolDocumentWriter](http://msdn.microsoft.com/en-us/library/system.diagnostics.symbolstore.isymboldocumentwriter.aspx)).
